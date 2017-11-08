@@ -12,6 +12,10 @@ const request = require('request');
 const readFileSync = require('fs').readFileSync;
 const collections = {};
 
+const TAGS = {
+  'atentado-no-texas': 'Atentado no Texas'
+};
+
 let database = null;
 
 const DB = new MongoConnection();
@@ -104,6 +108,8 @@ const receivedAuthentication = event => {
   const recipientId = event.recipient.id;
   const tagRef = event.optin.ref;
   const timeOfAuth = event.timestamp;
+  const tagName = TAGS[event.optin.ref] || 'o assunto';
+  const successMessage = `Olá, você está cadastrado para receber atualizações sobre ${tagName}!`;
 
   const users = database.collection('users');
 
@@ -117,9 +123,10 @@ const receivedAuthentication = event => {
     }
   };
 
+
   users
     .findOneAndUpdate({ userId: senderId }, user, { upsert: true })
-    .then(result => sendTextMessage(senderId, 'Olá, você está cadastrado para receber atualizações sobre o assunto!'));
+    .then(result => sendTextMessage(senderId, successMessage));
 };
 
 const sendNews = data => {
