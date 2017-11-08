@@ -76,7 +76,7 @@ const sendGenericMessage = (recipientId, message, quickReplies) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: message.tag,
+            title: message.tag.text,
             subtitle: message.text,
             item_url: message.link,
             image_url: message.image,
@@ -112,14 +112,14 @@ const receivedAuthentication = event => {
       userId: senderId,
       pageId: recipientId
     },
-    $push: {
+    $addToSet: {
       tags: tagRef
     }
   };
 
   users
     .findOneAndUpdate({ userId: senderId }, user, { upsert: true })
-    .then(result => sendTextMessage(senderId, 'Ok, você está cadastrado!'));
+    .then(result => sendTextMessage(senderId, 'Olá, você está cadastrado para receber atualizações sobre o assunto!'));
 };
 
 const sendNews = data => {
@@ -133,16 +133,16 @@ const sendNews = data => {
   const quickReplies = [{
     'content_type': 'text',
     'title': 'Cancelar inscrição',
-    'payload': `CANCEL_TAG:${tag}`
+    'payload': `CANCEL_TAG:${tag.id}`
   }];
 
-  users.find({ tags: { $in: [tag] } }).toArray().then(docs => {
+  users.find({ tags: { $in: [tag.id] } }).toArray().then(docs => {
     docs.forEach(user => {
       if(image) {
         sendGenericMessage(user.userId, { link, tag, text, image }, quickReplies)
           .then(() => debug('[send] envio de notícia para usuário'));
       } else {
-        sendTextMessage(user.userId, `${tag}: ${text} ${link}`, quickReplies)
+        sendTextMessage(user.userId, `${tag.text}: ${text} ${link}`, quickReplies)
           .then(() => debug('[send] envio de notícia para usuário'));
       }
     });
