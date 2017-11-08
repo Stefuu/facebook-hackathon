@@ -10,7 +10,7 @@
 							<span>Tag: {{item.tag.text}}</span>
 							<button v-on:click="republish(index)">Republicar</button>
 						</div>
-						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">	
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 img-container">	
 							<img v-if="item.image" v-bind:src="item.image" />
 							<span v-else="item.image">sem imagem</span>
 						</div>
@@ -203,6 +203,9 @@
 	}
 	.items-container {
 		border: 1px solid;
+	}
+	.img-container{
+		overflow: hidden;
 	}
 	div {
 		word-wrap: break-word;
