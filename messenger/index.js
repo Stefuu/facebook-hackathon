@@ -51,20 +51,21 @@ const callSendAPI = messageData => {
 };
 
 // copyright facebook
-const sendTextMessage = (recipientId, messageText) => {
+const sendTextMessage = (recipientId, messageText, quickReplies) => {
   return callSendAPI({
     recipient: {
       id: recipientId
     },
     message: {
       text: messageText,
-      metadata: 'SEND_NEWS'
+      metadata: 'SEND_NEWS',
+      quick_replies: quickReplies
     }
   });
 };
 
 // copyright facebook
-const sendGenericMessage = (recipientId, link, tag, text, image) => {
+const sendGenericMessage = (recipientId, message, quickReplies) => {
   var messageData = {
     recipient: {
       id: recipientId
@@ -75,22 +76,23 @@ const sendGenericMessage = (recipientId, link, tag, text, image) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: tag,
-            subtitle: text,
-            item_url: link,
-            image_url: image,
+            title: message.tag,
+            subtitle: message.text,
+            item_url: message.link,
+            image_url: message.image,
             buttons: [{
               type: "web_url",
-              url: link,
+              url: message.link,
               title: "Open Web URL"
             }],
           }]
         }
-      }
+      },
+      quick_replies: quickReplies
     }
   };
 
-  callSendAPI(messageData);
+  return callSendAPI(messageData);
 }
 
 /**
@@ -128,13 +130,19 @@ const sendNews = data => {
 
   const users = database.collection('users');
 
+  const quickReplies = [{
+    'content_type': 'text',
+    'title': 'Cancelar inscrição',
+    'payload': `CANCEL_TAG:${tag}`
+  }];
+
   users.find({ tags: { $in: [tag] } }).toArray().then(docs => {
     docs.forEach(user => {
       if(image) {
-        sendGenericMessage(user.userId, link, tag, text, image)
+        sendGenericMessage(user.userId, { link, tag, text, image }, quickReplies)
           .then(() => debug('[send] envio de notícia para usuário'));
       } else {
-        sendTextMessage(user.userId, `${text} ${link}`)
+        sendTextMessage(user.userId, `${tag}: ${text} ${link}`, quickReplies)
           .then(() => debug('[send] envio de notícia para usuário'));
       }
     });
