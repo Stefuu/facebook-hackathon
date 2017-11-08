@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import Publish from './components/publish.vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './assets/css/w3.css'
 
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)

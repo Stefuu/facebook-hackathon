@@ -2,35 +2,43 @@
 	<div id="publish">
 	<div class="container-fluid">	
 		<div class="row clearfix">
-			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
 				<h1>Publicações <button class="wipe" v-on:click="wipe()">Apagar TUDO!</button></h1> 
 				<template v-for="(item, index) in publishings">
-					<div class="item">
-						<div class="center col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="item row" v-bind:class="{ first: index == 0 }">
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 							<span>Tag: {{item.tag}}</span>
 						</div>
-						<div class="center col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<img v-bind:src="item.image" />
-						</div>	
-						<div class="center col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">	
+							<img v-if="item.image" v-bind:src="item.image" />
+							<span v-else="item.image">sem imagem</span>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">	
 							<span>{{item.text}}</span>
 						</div>
-						<div class="center col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 							<span><a href="item.link">{{item.link}}</a></span>
-						</div	>
+						</div>
 					</div>
 				</template>
 			</div>	
-			<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-				<h2>Tag</h2>
-				<input v-model="tag" name="tag">
-				<h2>Imagem</h2>
-				<input v-model="image" type="url" name="image" />
-				<h2>Link</h2>
-				<input v-model="link" type="url" name="url">
-				<h2>Resumo (ultimos acontecimentos)</h2>
-				<textarea v-model="text"></textarea>
-				<button v-on:click="publish()" id="publish">Publicar</button>
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+				
+				<div class="w3-container w3-gray w3-border">
+					<h2 class="white">Postar</h2>
+					<input class="w3-input" v-model="tag" name="tag">
+					<label>Tag</label>
+					
+					<input class="w3-input" v-model="image" type="url" name="image" />
+					<label>Imagem</label>
+					
+					<input class="w3-input" v-model="link" type="url" name="url">
+					<label>Link</label>
+					
+					<textarea class="w3-input" v-model="text"></textarea>
+					<label>Resumo (ultimos acontecimentos)</label>
+					<button class="w3-input" v-on:click="publish()" id="publish">Publicar</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -124,22 +132,54 @@
 <style scoped>
 	textarea {
 		width: 100%;
-		height: 300px; 
+		height: 100px; 
 	}
-	input {
-		width: 100%;
-		margin-bottom: 15px;
+	input, textarea {
+		margin-top: 15px;
+	}
+	label {
+		
+	}
+	button {
+		border: 1px solid #666;
+		margin-top: 25px;
+		cursor: pointer;
 	}
 	.item {
-		border: 1px solid;
+		border-bottom: 1px solid;
+		border-left: 1px solid;
+		border-right: 1px solid;
+		min-height: 80px;
+		background-color: #eee;
+	}
+	.item.first {
+		border-top: 1px solid;
 	}
 	img {
-		width: 80px;
+		height: 80px;
 	}
 	.wipe {
 		font-size: 13px;
 	}
 	.center {
 		text-align: center;
+	}
+	.white {
+		color: white;
+	}
+	.w3-container {
+		margin-top: 5px; 
+		padding-bottom: 5px;
+	}
+	.items-container {
+		border: 1px solid;
+	}
+	div {
+		word-wrap: break-word;
+	}
+	a {
+		cursor: pointer;
+		text-decoration: underline;
+		color: blue;
 	}
 </style>
