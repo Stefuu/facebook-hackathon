@@ -190,10 +190,10 @@ const app = http.createServer((req, res) => {
 
   // rota para optin exemplo
   // remove
-  if(method === 'GET' && url.pathname == '/optin.htm') {
-    debug(`-> [${id}] static optin.htm file`);
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write(readFileSync('messenger/optin.htm'));
+  if(method === 'GET' && url.pathname.match('/public/')) {
+    debug(`-> [${id}] public file`);
+    res.writeHead(200, {});
+    res.write(readFileSync(require('path').join(__dirname, '../', url.pathname)));
     res.end();
     return ;
   }
