@@ -64,7 +64,7 @@ const sendTextMessage = (recipientId, messageText) => {
 };
 
 // copyright facebook
-const sendGenericMessage = (recipientId, link, text, image) => {
+const sendGenericMessage = (recipientId, link, tag, text, image) => {
   var messageData = {
     recipient: {
       id: recipientId
@@ -75,7 +75,8 @@ const sendGenericMessage = (recipientId, link, text, image) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: text,
+            title: tag,
+            subtitle: text,
             item_url: link,
             image_url: image,
             buttons: [{
@@ -130,7 +131,8 @@ const sendNews = data => {
   users.find({ tags: { $in: [tag] } }).toArray().then(docs => {
     docs.forEach(user => {
       if(image) {
-        sendGenericMessage(user.userId, link, text, image);
+        sendGenericMessage(user.userId, link, tag, text, image)
+          .then(() => debug('[send] envio de notícia para usuário'));
       } else {
         sendTextMessage(user.userId, `${text} ${link}`)
           .then(() => debug('[send] envio de notícia para usuário'));
