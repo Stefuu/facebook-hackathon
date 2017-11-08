@@ -1,0 +1,31 @@
+{
+  "name": "facebook-messenger-news",
+  "version": "1.0.0",
+  "description": "Facebook messenger webhook",
+  "main": "messenger/index.js",
+  "scripts": {
+    "start": "node messenger/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stefuu/facebook-hackathon.git"
+  },
+  "keywords": [
+    "facebook",
+    "messenger",
+    "news"
+  ],
+  "author": "Gustavo Paes <gpaes@uolinc.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Stefuu/facebook-hackathon/issues"
+  },
+  "homepage": "https://github.com/Stefuu/facebook-hackathon#readme",
+  "dependencies": {
+    "debug": "^3.1.0",
+    "dotenv": "^4.0.0",
+    "mongo-connection": "^1.0.11",
+    "request": "^2.83.0"
+  }
+}
