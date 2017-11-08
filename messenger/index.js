@@ -76,8 +76,8 @@ const sendGenericMessage = (recipientId, message, quickReplies) => {
         payload: {
           template_type: "generic",
           elements: [{
-            title: message.tag.text,
-            subtitle: message.text,
+            title: message.text,
+            subtitle: message.tag.text,
             item_url: message.link,
             image_url: message.image,
             buttons: [{
