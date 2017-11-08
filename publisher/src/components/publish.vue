@@ -185,7 +185,8 @@
 		border-top: 1px solid;
 	}
 	img {
-		height: 80px;
+		width: 100%;
+    	height: auto;
 	}
 	.wipe {
 		font-size: 13px;
