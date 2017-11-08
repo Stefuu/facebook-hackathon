@@ -15,7 +15,7 @@ const collections = {};
 let database = null;
 
 const DB = new MongoConnection();
-DB.connect(db => database = db)
+DB.connect().then(db => database = db);
 
 const uniqId = () => {
   return Math.random() * process.hrtime().join('');
