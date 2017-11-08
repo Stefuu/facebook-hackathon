@@ -162,7 +162,22 @@ const receivedMessage = event => {
     return;
   }
 
+  if(message.quick_reply && /CANCEL_TAG:/.test(message.quick_reply.payload) == true) {
+    removeUserTag(senderID, message.quick_reply.payload.split(':')[1]);
+    sendTextMessage(senderID, 'Ok, você não receberá mais mensagens sobre esse assunto');
+    return;
+  }
+
   sendTextMessage(senderID, messageText);
+};
+
+const removeUserTag = (userId, tag) => {
+  const user = database.collection('users');
+  user.findOneAndUpdate({ userId: userId }, {
+    $pull : {
+      tags: tag
+    }
+  });
 };
 
 const app = http.createServer((req, res) => {
