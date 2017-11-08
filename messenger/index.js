@@ -123,10 +123,7 @@ const receivedAuthentication = event => {
 };
 
 const sendNews = data => {
-  const tag = {
-    id: data.tagId,
-    text: data.tagText
-  };
+  const tag = data.tag;
   const text = data.text;
   const link = data.link;
   const image = data.image;
