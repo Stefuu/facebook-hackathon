@@ -194,6 +194,7 @@ const app = http.createServer((req, res) => {
     debug(`-> [${id}] static optin.htm file`);
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.write(readFileSync('messenger/optin.htm'));
+    res.end();
     return ;
   }
 
