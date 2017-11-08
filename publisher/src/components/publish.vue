@@ -8,6 +8,7 @@
 					<div class="item row" v-bind:class="{ first: index == 0 }">
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 							<span>Tag: {{item.tag.text}}</span>
+							<button v-on:click="republish(index)">Republicar</button>
 						</div>
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">	
 							<img v-if="item.image" v-bind:src="item.image" />
@@ -68,6 +69,13 @@
 					this.post()
 				}else{
 					alert('Campos inválidos')
+				}
+			},
+			republish: function(index){
+				let json = this.getLocalStorage()
+				if( json && json[index] ){
+					this.json = json[index]
+					this.post()
 				}
 			},
 			post: function(){
@@ -159,12 +167,11 @@
 	input, textarea {
 		margin-top: 15px;
 	}
-	label {
-
+	span {
+		display: block;
 	}
 	button {
 		border: 1px solid #666;
-		margin-top: 25px;
 		cursor: pointer;
 	}
 	.item {
