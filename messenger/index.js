@@ -37,28 +37,60 @@ const textToJson = text => {
 };
 
 const callSendAPI = messageData => {
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
-    method: 'POST',
-    json: messageData
-  }, (err, response, body) => {
-    debug('facebook call send api: ', err, body);
+  return new Promise((resolve, reject) => {
+    request({
+      uri: 'https://graph.facebook.com/v2.6/me/messages',
+      qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
+      method: 'POST',
+      json: messageData
+    }, (err, response, body) => {
+      debug('facebook call send api: ', err, body);
+      resolve();
+    });
   });
 };
 
 // copyright facebook
 const sendTextMessage = (recipientId, messageText) => {
-  callSendAPI({
+  return callSendAPI({
     recipient: {
       id: recipientId
     },
     message: {
       text: messageText,
-      metadata: "DEVELOPER_DEFINED_METADATA"
+      metadata: 'SEND_NEWS'
     }
   });
 };
+
+// copyright facebook
+const sendGenericMessage = (recipientId, link, text, image) => {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "generic",
+          elements: [{
+            title: text,
+            item_url: link,
+            image_url: image,
+            buttons: [{
+              type: "web_url",
+              url: link,
+              title: "Open Web URL"
+            }],
+          }]
+        }
+      }
+    }
+  };
+
+  callSendAPI(messageData);
+}
 
 /**
  * Recebe optin de usuário com a tag.
@@ -85,6 +117,26 @@ const receivedAuthentication = event => {
   users
     .findOneAndUpdate({ userId: senderId }, user, { upsert: true })
     .then(result => sendTextMessage(senderId, 'Ok, você está cadastrado!'));
+};
+
+const sendNews = data => {
+  const tag = data.tag;
+  const text = data.text;
+  const link = data.link;
+  const image = data.image;
+
+  const users = database.collection('users');
+
+  users.find({ tags: { $in: [tag] } }).toArray().then(docs => {
+    docs.forEach(user => {
+      if(image) {
+        sendGenericMessage(user.userId, link, text, image);
+      } else {
+        sendTextMessage(user.userId, `${text} ${link}`)
+          .then(() => debug('[send] envio de notícia para usuário'));
+      }
+    });
+  }).catch(err => debug(err));
 };
 
 const receivedMessage = event => {
@@ -174,9 +226,7 @@ const app = http.createServer((req, res) => {
 
     switch(url.pathname) {
       case '/send':
-        // todo:
-        // enviar a mensagem para os usuários
-        debug('routa /send');
+        sendNews(data);
       break;
 
       case '/webhook':
