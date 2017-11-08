@@ -12,10 +12,10 @@ const request = require('request');
 const readFileSync = require('fs').readFileSync;
 const collections = {};
 
-global.database = null;
+let database = null;
 
 const DB = new MongoConnection();
-DB.connect(db => global.database = db)
+DB.connect(db => database = db)
 
 const uniqId = () => {
   return Math.random() * process.hrtime().join('');
@@ -60,12 +60,31 @@ const sendTextMessage = (recipientId, messageText) => {
   });
 };
 
+/**
+ * Recebe optin de usuário com a tag.
+ * Faz o cadastro da tag e id do usuário no banco.
+ */
 const receivedAuthentication = event => {
-  const senderID = event.sender.id;
-  const recipientID = event.recipient.id;
+  const senderId = event.sender.id;
+  const recipientId = event.recipient.id;
+  const tagRef = event.optin.ref;
   const timeOfAuth = event.timestamp;
 
-  sendTextMessage(senderID, 'Ok, você está cadastrado!');
+  const users = database.collection('users');
+
+  const user = {
+    $setOnInsert: {
+      userId: senderId,
+      pageId: recipientId
+    },
+    $push: {
+      tags: tagRef
+    }
+  };
+
+  users
+    .findOneAndUpdate({ userId: senderId }, user, { upsert: true })
+    .then(result => sendTextMessage(senderId, 'Ok, você está cadastrado!'));
 };
 
 const receivedMessage = event => {
