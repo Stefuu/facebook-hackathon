@@ -109,7 +109,7 @@ const receivedAuthentication = event => {
   const tagRef = event.optin.ref;
   const timeOfAuth = event.timestamp;
   const tagName = TAGS[event.optin.ref] || 'o assunto';
-  const successMessage = `Olá, você está cadastrado para receber atualizações sobre ${tagName}!`;
+  const successMessage = `Olá, você vai receber as principais notícias sobre ${tagName}!`;
 
   const users = database.collection('users');
 
@@ -171,7 +171,7 @@ const receivedMessage = event => {
 
   if(message.quick_reply && /CANCEL_TAG:/.test(message.quick_reply.payload) == true) {
     removeUserTag(senderID, message.quick_reply.payload.split(':')[1]);
-    sendTextMessage(senderID, 'Ok, você não receberá mais mensagens sobre esse assunto');
+    sendTextMessage(senderID, 'Obrigado por acompanhar a cobertura sobre esse assunto.');
     return;
   }
 
